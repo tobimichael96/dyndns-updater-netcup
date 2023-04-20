@@ -1,0 +1,19 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Registry
+        run: docker login ghcr.io --username ausraster
+      - name: Build the tagged Docker image
+        run: docker build . --file Dockerfile --tag ausraster/dyndns-updater-netcup:latest
+      - name: Push the tagged Docker image
+        run: docker push ghcr.io/ausraster/dyndns-updater-netcup:latest
