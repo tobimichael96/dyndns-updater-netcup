@@ -9,13 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Login to GitHub Registry
         run: docker login ghcr.io --username ausraster
       - name: Get the version
         id: vars
         run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-      - name: Build the tagged Docker image
-        run: docker build . --file Dockerfile --tag ausraster/dyndns-updater-netcup:${{steps.vars.outputs.tag}}
-      - name: Push the tagged Docker image
-        run: docker push ghcr.io/ausraster/dyndns-updater-netcup:${{steps.vars.outputs.tag}}
+      - name: 'Build and push the image'
+        uses: docker/build-push-action@v4
+        with:
+          registry: ghcr.io
+          username: "ausraster"
+          repository: ausraster/dyndns-updater-netcup
+          tags: ${{steps.vars.outputs.tag}}

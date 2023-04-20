@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Login to GitHub Registry
-        run: docker login ghcr.io --username ausraster
-      - name: Build the tagged Docker image
-        run: docker build . --file Dockerfile --tag ausraster/dyndns-updater-netcup:latest
-      - name: Push the tagged Docker image
-        run: docker push ghcr.io/ausraster/dyndns-updater-netcup:latest
+      - uses: actions/checkout@v3
+      - name: 'Build and push the image'
+        uses: docker/build-push-action@v1
+        with:
+          registry: ghcr.io
+          username: "ausraster"
+          repository: ausraster/dyndns-updater-netcup
+          tags: latest
