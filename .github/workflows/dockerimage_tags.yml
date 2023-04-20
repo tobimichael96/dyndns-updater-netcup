@@ -22,4 +22,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ github.repository }}:${{steps.vars.outputs.tag}}
+          tags: ghcr.io/${{ github.repository }}:${{steps.vars.outputs.tag}}
