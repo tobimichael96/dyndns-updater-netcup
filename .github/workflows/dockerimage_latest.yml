@@ -16,5 +16,4 @@ jobs:
         with:
           registry: ghcr.io
           username: "ausraster"
-          repository: ausraster/dyndns-updater-netcup
           tags: latest
