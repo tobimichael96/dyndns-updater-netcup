@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 
@@ -9,8 +10,9 @@ api_key = os.getenv('API_KEY')
 api_password = os.getenv('API_PASSWORD')
 domain_names = os.getenv('DOMAINS', ",").split(",")
 
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 if customer is None or api_key is None or api_password is None:
-    print(f"You are missing some credentials.")
+    logging.info(f"You are missing some credentials.")
     exit()
 
 API = Client(customer, api_key, api_password)
@@ -31,7 +33,7 @@ class Domain:
         if len(records) == 0:
             self.add_destinations()
         else:
-            print(f"Fetched {len(records)} records(s) for {self.name}.")
+            logging.info(f"Fetched {len(records)} records(s) for {self.name}.")
         for record in records:
             self.records.append(record)
 
@@ -44,7 +46,7 @@ class Domain:
         global IP_ADDRESS, API
         API.add_dns_record(self.name, DNSRecord("*", "A", IP_ADDRESS))
         API.add_dns_record(self.name, DNSRecord("@", "A", IP_ADDRESS))
-        print(f"Added new records for {self.name}.")
+        logging.info(f"Added new records for {self.name}.")
         time.sleep(5)  # Let's wait a bit before we fetch again
         self.fetch_records()
 
@@ -54,9 +56,9 @@ class Domain:
             if rec.destination != IP_ADDRESS:
                 rec.destination = IP_ADDRESS
                 API.update_dns_record(self.name, rec)
-                print(f"Updated record {rec.hostname} for {self.name}.")
+                logging.info(f"Updated record {rec.hostname} for {self.name}.")
             else:
-                print(f"Nothing to do for {self.name} records: {rec}")
+                logging.info(f"Nothing to do for {self.name} records: {rec}")
 
     def __str__(self):
         return f"{self.name} with records {self.records}"
@@ -70,19 +72,19 @@ for domain_name in domain_names:
     domain_object = Domain(domain_name)
 IP_ADDRESS = get_public_ip()
 
-print(f"Initialization started with IP: {IP_ADDRESS}")
-print("Found following domains with records:")
+logging.info(f"Initialization started with IP: {IP_ADDRESS}")
+logging.info("Found following domains with records:")
 for dom in DOMAINS:
-    print(dom)
+    logging.info(dom)
 
 counter = 0
 while 1:
     IP_ADDRESS = get_public_ip()
     for domain in DOMAINS:
         if counter >= 12:
-            print("Forcing new fetches for domains.")
+            logging.info("Forcing new fetches for domains.")
             domain.fetch_records()
         domain.update_destinations()
-    print(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
+    logging.info(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
     time.sleep(60 * 5)
     counter += 1
