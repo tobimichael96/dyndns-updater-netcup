@@ -3,3 +3,4 @@ venv/
 docker-compose.yaml
 files/
 *.iml
+env.vars

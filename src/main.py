@@ -80,6 +80,7 @@ for dom in DOMAINS:
 counter = 0
 while 1:
     IP_ADDRESS = get_public_ip()
+    API.login()
     for domain in DOMAINS:
         if counter >= 12:
             logging.info("Forcing new fetches for domains.")
@@ -87,5 +88,6 @@ while 1:
             counter = 0
         domain.update_destinations()
     logging.info(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
+    API.logout()
     time.sleep(60 * 5)
     counter += 1
