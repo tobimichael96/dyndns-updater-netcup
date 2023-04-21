@@ -84,6 +84,7 @@ while 1:
         if counter >= 12:
             logging.info("Forcing new fetches for domains.")
             domain.fetch_records()
+            counter = 0
         domain.update_destinations()
     logging.info(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
     time.sleep(60 * 5)
