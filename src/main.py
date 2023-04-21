@@ -9,8 +9,19 @@ customer = os.getenv('CUSTOMER_ID')
 api_key = os.getenv('API_KEY')
 api_password = os.getenv('API_PASSWORD')
 domain_names = os.getenv('DOMAINS', ",").split(",")
+interval_time = os.getenv('INTERVAL_TIME', 5)
+logging_mode = os.getenv('LOGGING', 'INFO')
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+if logging_mode == 'INFO':
+    level = logging.INFO
+elif logging_mode == 'DEBUG':
+    level = logging.DEBUG
+elif logging_mode == 'ERROR':
+    level = logging.ERROR
+else:
+    level = logging.INFO
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=level)
 if customer is None or api_key is None or api_password is None:
     logging.info(f"You are missing some credentials.")
     exit()
@@ -80,6 +91,7 @@ for dom in DOMAINS:
 counter = 0
 while 1:
     IP_ADDRESS = get_public_ip()
+    logging.info(f'Updated ip address to: {IP_ADDRESS}')
     API.login()
     for domain in DOMAINS:
         if counter >= 12:
@@ -89,5 +101,5 @@ while 1:
         domain.update_destinations()
     logging.info(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
     API.logout()
-    time.sleep(60 * 5)
+    time.sleep(60 * interval_time)
     counter += 1
