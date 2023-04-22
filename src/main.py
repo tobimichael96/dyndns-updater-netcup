@@ -38,13 +38,16 @@ class Domain:
         DOMAINS.append(self)
         self.fetch_records()
 
-    def fetch_records(self):
+    def fetch_records(self, force=False):
         global API
         records = API.dns_records(self.name)
         if len(records) == 0:
             self.add_destinations()
         else:
             logging.info(f"Fetched {len(records)} records(s) for {self.name}.")
+            if force:
+                self.records.clear()
+                logging.info(f"Cleared records for {self.name}.")
         for record in records:
             self.records.append(record)
 
@@ -96,7 +99,7 @@ while 1:
     for domain in DOMAINS:
         if counter >= 12:
             logging.info("Forcing new fetches for domains.")
-            domain.fetch_records()
+            domain.fetch_records(force=True)
             counter = 0
         domain.update_destinations()
     logging.info(f'Check done at {time.strftime("%d.%m.%y, %H:%M:%S", time.localtime())}.')
