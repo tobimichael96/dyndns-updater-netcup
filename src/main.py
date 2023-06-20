@@ -82,9 +82,9 @@ def get_public_ip():
     return get('https://checkip.amazonaws.com').content.decode('utf8').strip()
 
 
+IP_ADDRESS = get_public_ip()
 for domain_name in domain_names:
     domain_object = Domain(domain_name)
-IP_ADDRESS = get_public_ip()
 
 logging.info(f"Initialization started with IP: {IP_ADDRESS}")
 logging.info("Found following domains with records:")
