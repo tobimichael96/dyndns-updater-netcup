@@ -79,7 +79,7 @@ class Domain:
 
 
 def get_public_ip():
-    return get('https://api.ipify.org').content.decode('utf8')
+    return get('https://checkip.amazonaws.com').content.decode('utf8').strip()
 
 
 for domain_name in domain_names:
